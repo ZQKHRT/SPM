@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--配置文件是编写SQL语句的-->
+<mapper namespace="com.vrms.app.dao.AppointmentDao">
+    <insert id="save">
+        insert into appointment(uid,addid,vacid,money,apptime,ctime,remark,appstats)
+        values (#{uid},#{addid},#{vacid},#{money},#{apptime},#{ctime},#{remark},#{appstats})
+    </insert>
+    <update id="update">
+        update appointment
+        set uid=#{uid},
+            addid=#{addid},
+            vacid=#{vacid},
+            money=#{money},
+            appstats=#{appstats},
+            apptime=#{apptime},
+            mtime=#{mtime},
+            remark=#{remark}
+        where appid=#{appid}
+    </update>
+    <update id="remove">
+        update appointment
+        set deleted = 1
+        where appid=#{appid}
+    </update>
+
+    <update id="changeStats">
+        update appointment set statstime = #{statstime} ,
+                               stats=#{stats}
+        where appid=#{appid}
+    </update>
+    <select id="listPage" resultType="com.vrms.app.entity.Appointment">
+        select *
+        from appointment as app
+            left join address as a on app.addid = a.addid
+            left join users as u on app.uid=u.uid
+
+            left join vaccines as v on app.vacid = v .vacid
+        <where>
+            <if test="username !=null and username !=''">
+                u.username like '%${username}%'
+            </if>
+            and app.deleted=0
+        </where>
+        limit #{page},#{size}
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(*)
+        from appointment as app
+                 left join users as u on app.uid=u.uid
+                 left join address as a on app.addid = a.addid
+                 left join vaccines as v on app.vacid = v .vacid
+        <where>
+            <if test="username !=null and username !=''">
+                u.username like '%${username}%'
+            </if>
+            and app.deleted=0
+        </where>
+    </select>
+</mapper>

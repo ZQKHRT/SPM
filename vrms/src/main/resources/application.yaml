@@ -1,0 +1,18 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/vrms
+mybatis: #配置sql语句配置文件的位置
+  mapper-locations: mapper/*.xml
+
+#配置开发时需要在控制台中打印的
+logging:
+  level:
+      com:
+        vrms:
+          app:
+            dao: debug
